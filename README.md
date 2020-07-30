@@ -100,6 +100,8 @@ This project was largely inspired by [GangZhuo/BaiduPCS](https://github.com/Gang
 
 Go语言程序, 可直接在[发布页](https://github.com/iikira/BaiduPCS-Go/releases)下载使用.
 
+可在这里下载最新commit对应的**测试版**: https://ci.appveyor.com/project/iikira/baidupcs-go/build/artifacts
+
 如果程序运行时输出乱码, 请检查下终端的编码方式是否为 `UTF-8`.
 
 使用本程序之前, 建议学习一些 linux 基础知识 和 基础命令.
@@ -349,16 +351,39 @@ BaiduPCS-Go d <网盘文件或目录的路径1> <文件或目录2> <文件或目
   --save          将下载的文件直接保存到当前工作目录
   --saveto value  将下载的文件直接保存到指定的目录
   -x              为文件加上执行权限, (windows系统无效)
-  --share         以分享文件的方式获取下载链接来下载
-  --locate        以获取直链的方式来下载
-  -p value        指定下载线程数
-```
+  --mode value    下载模式, 可选值: pcs, stream, locate, locate_pan, share, 默认为 locate, 相关说明见上面的帮助 (default: "locate")
+  -p value        指定下载线程数 (default: 0)
+  -l value        指定同时进行下载文件的数量 (default: 0)
+  --retry value   下载失败最大重试次数 (default: 3)
+  --nocheck       下载文件完成后不校验文件
 
-支持多个文件或目录的下载.
+```
 
 下载的文件默认保存到 **程序所在目录** 的 download/ 目录, 支持设置指定目录, 重名的文件会自动跳过!
 
+下载的文件默认保存到, **程序所在目录**的 **download/** 目录.
+
+通过 `BaiduPCS-Go config set -savedir <savedir>`, 自定义保存的目录.
+
+支持多个文件或目录下载.
+ 
+支持下载完成后自动校验文件, 但并不是所有的文件都支持校验!
+ 
+自动跳过下载重名的文件!
+
 [关于下载的简单说明](https://github.com/iikira/BaiduPCS-Go/wiki/%E5%85%B3%E4%BA%8E%E4%B8%8B%E8%BD%BD%E7%9A%84%E7%AE%80%E5%8D%95%E8%AF%B4%E6%98%8E)
+
+#### 下载模式说明
+
+* pcs: 通过百度网盘的 PCS API 下载
+
+* stream: 通过百度网盘的 PCS API, 以流式文件的方式下载, 效果同 pcs
+
+* locate: 默认的下载模式。从百度网盘 Android 客户端, 获取下载链接的方式来下载
+
+* locate_pan: 从百度网盘 WEB 首页获取下载链接来下载, 该下载方式需配合第三方服务器, 机密文件切勿使用此下载方式
+
+* share: 从网盘文件的分享列表获取文件的下载链接来下载
 
 #### 例子
 ```
@@ -856,15 +881,13 @@ d 1.mp4
 d /我的资源
 ```
 
-参见 例6 设置下载最大并发量
-
 ## 6. 设置下载最大并发量
 
 cli交互模式下, 运行命令 `config set -h` (注意空格) 查看设置帮助以及可供设置的值
 
-cli交互模式下, 运行命令 `config set -max_parallel 250` 将下载最大并发量设置为 250
+cli交互模式下, 运行命令 `config set -max_parallel 2` 将下载最大并发量设置为 2
 
-下载最大并发量建议值: 50~500, 太低下载速度提升不明显甚至速度会变为0, 太高可能会导致程序出错被操作系统结束掉.
+注意：下载最大并发量的值不易设置过高, 可能会导致百度帐号被限制下载
 
 ## 7. 退出程序
 
@@ -891,11 +914,3 @@ cli交互模式下, 运行命令 `config set -max_parallel 250` 将下载最大�
 邮箱: i@mail.iikira.com
 
 QQ群: 178324706
-
-# 捐助
-
-如果你愿意.
-
-|支付宝|微信|
-|:-----:|:-----:|
-|![alipay](https://github.com/iikira/BaiduPCS-Go/raw/master/assets/donate/alipay.jpg)|![weixin](https://github.com/iikira/BaiduPCS-Go/raw/master/assets/donate/weixin.png)|
